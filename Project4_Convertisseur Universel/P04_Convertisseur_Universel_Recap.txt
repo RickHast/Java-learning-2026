@@ -1,0 +1,246 @@
+
+╔══════════════════════════════════════════════════════════════════════╗
+║           RÉCAPITULATIF PÉDAGOGIQUE — P04                           ║
+║           Convertisseur Universel — Java Pur                        ║
+║           Niveau : Débutant+ | Note finale : 18/20                  ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+Date de complétion : 2026
+Parcours          : Débutant → Senior Java (2026)
+Package           : com.rickhast.universal_converter
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. RÉSUMÉ DU PROJET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OBJECTIF DU PROJET
+──────────────────
+Créer un convertisseur universel multi-catégories (température, distance,
+poids) avec navigation par menus hiérarchiques et architecture multi-classes.
+
+FONCTIONNALITÉS DÉVELOPPÉES
+────────────────────────────
+  ✅ Menu principal avec 3 catégories + Quit
+  ✅ Sous-menus par catégorie (température, distance, poids)
+  ✅ 18 conversions au total (6 par catégorie)
+  ✅ Formules mathématiques correctes pour chaque conversion
+  ✅ Validation des saisies numériques
+  ✅ Validation des choix de menu (< 1 || > size())
+  ✅ return propre pour sortir des sous-menus
+  ✅ Scanner unique partagé entre toutes les classes
+  ✅ Architecture multi-classes (4 fichiers Java)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  2. NOTIONS UTILISÉES ET APPRISES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  • Architecture multi-classes      → 4 fichiers Java distincts
+  • Scanner partagé en paramètre    → un seul Scanner(System.in)
+  • Menus hiérarchiques             → switch imbriqués dans des méthodes
+  • Validation d'index de menu      → converterChoice < 1 || > list.size()
+  • return pour sortir d'un menu    → évite la récursion infinie
+  • ArrayList<String> pour menus    → options dynamiques + size()
+  • Formules mathématiques          → température, distance, poids
+  • Méthodes utilitaires partagées  → displayForm(), getUnderFunctionChoice()
+  • Passage de Scanner en paramètre → bonne pratique multi-classes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  3. MINI-DOCUMENTATION PÉDAGOGIQUE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 1 — Architecture multi-classes                              │
+└─────────────────────────────────────────────────────────────────────┘
+PRINCIPE :
+  Diviser le code en plusieurs fichiers Java selon les responsabilités.
+  Chaque classe gère un domaine précis.
+
+DANS CE PROJET :
+  UniversalConverter.java  → navigation, menus, point d'entrée
+  TemperatureConversion.java → toutes les conversions de température
+  DistanceConversion.java    → toutes les conversions de distance
+  WeightConverter.java       → toutes les conversions de poids
+
+AVANTAGES :
+  → Code plus lisible (chaque fichier = une responsabilité)
+  → Maintenance facile (modifier les poids sans toucher la température)
+  → Réutilisabilité (DistanceConversion peut être importée ailleurs)
+
+APPEL ENTRE CLASSES :
+  // Dans UniversalConverter, appel d'une méthode de TemperatureConversion
+  TemperatureConversion.celsiusToFahrenheit(scanner);
+  // NomDeLaClasse.nomDeLaMéthode(paramètres)
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 2 — Scanner unique partagé en paramètre                     │
+└─────────────────────────────────────────────────────────────────────┘
+PROBLÈME :
+  Créer plusieurs Scanner(System.in) en simultané provoque des conflits
+  de buffer → tokens consommés par le mauvais scanner → bugs imprévisibles.
+
+SOLUTION :
+  Créer UN SEUL Scanner dans la classe principale, le passer en paramètre
+  à toutes les méthodes qui en ont besoin.
+
+  // ✅ Un seul Scanner — dans UniversalConverter
+  static Scanner scanner = new Scanner(System.in);
+
+  // Toutes les autres classes le reçoivent en paramètre
+  static void celsiusToFahrenheit(Scanner scanner) { ... }
+
+RÈGLE :
+  Dans un projet multi-classes → toujours un seul Scanner(System.in)
+  → le passer en paramètre aux méthodes qui lisent des entrées.
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 3 — Validation d'index de menu                              │
+└─────────────────────────────────────────────────────────────────────┘
+BONNE PRATIQUE :
+  Toujours valider que le choix est dans les bornes de la liste.
+
+  // ✅ Correct
+  if (choice < 1 || choice > options.size()) {
+      throw new InputMismatchException("Pick between 1 and " + options.size());
+  }
+
+  // ❌ Mauvais — toujours faux, ne valide rien
+  if (!options.contains(options.get(choice))) { ... }
+  // options.get(choice) est TOUJOURS dans options → contains() = true
+
+POURQUOI :
+  options.get(choice) retourne l'élément À l'index 'choice'.
+  Cet élément fait forcément partie de la liste → contains() = true toujours.
+  Il faut valider l'INDEX, pas l'ÉLÉMENT.
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 4 — return pour sortir d'un sous-menu                       │
+└─────────────────────────────────────────────────────────────────────┘
+PROBLÈME — récursion :
+  Appeler mainMenu() depuis un sous-menu crée une nouvelle pile d'appel
+  à chaque navigation → StackOverflowError après plusieurs navigations.
+
+  // ❌ DANGER
+  case 4:
+      mainMenu(); // ← empile un nouvel appel → crash garanti
+
+SOLUTION — return :
+  // ✅ CORRECT
+  case 4:
+      return; // ← sort proprement du sous-menu, revient à mainMenu()
+
+POURQUOI ça fonctionne :
+  mainMenu() appelle temperatureMenu(). Quand temperatureMenu() fait
+  return, l'exécution reprend dans mainMenu() juste après l'appel.
+  Pas de nouvelle pile créée → zéro risque de StackOverflow.
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 5 — Formules de conversion                                  │
+└─────────────────────────────────────────────────────────────────────┘
+TEMPÉRATURE :
+  °C → °F    : (C × 9/5) + 32
+  °C → K     : C + 273.15
+  °F → °C    : (F - 32) × 5/9
+  °F → K     : (F - 32) × 5/9 + 273.15
+  K  → °C    : K - 273.15
+  K  → °F    : (K - 273.15) × 9/5 + 32
+
+DISTANCE :
+  km → miles  : km × 0.621371
+  km → meters : km × 1000
+  miles → km  : miles × 1.60934
+  miles → m   : miles × 1609.34
+  m → km      : m / 1000
+  m → miles   : m / 1609.34
+
+POIDS :
+  kg → lbs    : kg × 2.20462
+  kg → g      : kg × 1000
+  lbs → kg    : lbs / 2.20462
+  lbs → g     : lbs × 453.592
+  g → kg      : g / 1000
+  g → lbs     : g / 453.592
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 6 — Pattern DRY (Don't Repeat Yourself)                     │
+└─────────────────────────────────────────────────────────────────────┘
+PROBLÈME IDENTIFIÉ :
+  Chaque méthode de conversion répète le même bloc de saisie/validation.
+  C'est une violation du principe DRY.
+
+VERSION ACTUELLE (débutant) :
+  boolean validUserValue = false;
+  double value = 0;
+  while (!validUserValue) {
+      try {
+          value = scanner.nextDouble();
+          validUserValue = true;
+      } catch (...) { scanner.nextLine(); }
+  }
+
+VERSION SENIOR — méthode utilitaire :
+  static double readDouble(Scanner scanner, String prompt) {
+      while (true) {
+          try {
+              System.out.print(prompt);
+              return scanner.nextDouble();
+          } catch (InputMismatchException e) {
+              System.out.println("Error: please enter a valid number.");
+              scanner.nextLine();
+          }
+      }
+  }
+
+  // Chaque conversion devient alors :
+  static void celsiusToFahrenheit(Scanner scanner) {
+      double v = readDouble(scanner, "Enter value in Celsius: ");
+      System.out.printf("%n%.2f°C = %.2f°F%n", v, (v * 9.0/5) + 32);
+  }
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  4. ERREURS COMMISES ET LEÇONS RETENUES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ❌ V1 → 4 Scanner(System.in) → conflits buffer    ✅ Corrigé en V2
+  ❌ V1 → boolean passé en paramètre inutilement    ✅ Supprimé en V2
+  ❌ V1 → contains(get(i)) → validation toujours fausse ✅ Corrigé en V2/V3
+  ❌ V1 → mainMenu() récursif depuis sous-menus     ✅ Remplacé par return V2
+  ❌ V1 → snake_case généralisé                     ✅ Corrigé en V2/V3
+  ❌ V2 → distanceMenu/weightMenu validation cassée ✅ Corrigé en V3
+  ❌ V2 → pounds(Kelvin), grams(°F) labels faux     ✅ Corrigé en V3
+  ❌ V2 → print orphelin dans kelvinToCelsius()     ✅ Supprimé en V3
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  5. RESSOURCES UTILISÉES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  🎥 Java Switch Statement – Bro Code
+     https://www.youtube.com/watch?v=mIskLDrrMoA
+
+  🎥 Java Methods – Telusko
+     https://www.youtube.com/watch?v=vvanI8NsuiA
+
+  📖 Java Math – docs.oracle.com
+     https://docs.oracle.com/en/java/docs/api/java.base/java/lang/Math.html
+
+  📖 String.format – baeldung.com
+     https://www.baeldung.com/string/format
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  6. PROCHAINE ÉTAPE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ➡️  P05 — Mini Banque Console
+  Nouvelles notions : POO complète (classes, objets, constructeurs,
+  attributs, méthodes d'instance, ArrayList, encapsulation)
+
+  Compétences à acquérir :
+  • Créer une classe CompteBancaire avec attributs et méthodes
+  • Instancier des objets avec new
+  • Comprendre this et les constructeurs
+  • Utiliser ArrayList pour l'historique des transactions
+  • Premier contact avec l'encapsulation (private/public)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Parcours Java 2026 | Mentor : Claude (Anthropic)
+  Prochain projet : P05 | Projets complétés : 4/100
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
