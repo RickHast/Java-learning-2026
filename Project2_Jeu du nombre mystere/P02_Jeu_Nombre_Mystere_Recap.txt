@@ -1,0 +1,319 @@
+
+╔══════════════════════════════════════════════════════════════════════╗
+║           RÉCAPITULATIF PÉDAGOGIQUE — P02                           ║
+║           Jeu du Nombre Mystère — Java Pur                          ║
+║           Niveau : Débutant | Note finale : 18/20                   ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+Date de complétion : 2026
+Parcours          : Débutant → Senior Java (2026)
+Package           : (default)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. RÉSUMÉ DU PROJET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OBJECTIF DU PROJET
+──────────────────
+Créer un jeu console où le programme génère un nombre aléatoire entre
+1 et 100, et l'utilisateur doit le deviner en 10 tentatives maximum.
+Le programme guide le joueur avec des indications "Too High" / "Too Low".
+
+FONCTIONNALITÉS DÉVELOPPÉES
+────────────────────────────
+  ✅ Génération d'un nombre aléatoire entre 1 et 100 (Random)
+  ✅ Affichage du nombre de tentatives restantes à chaque tour
+  ✅ Indications : Too High / Too Low / Congratulations
+  ✅ Limite de 10 tentatives avec Game Over
+  ✅ Saisie invalide ne consomme pas de tentative (attempts--)
+  ✅ Validation : nombre hors [1-100] → message d'erreur
+  ✅ Option rejouer en fin de partie (y/n)
+  ✅ Séparation des responsabilités : verification() / playGame() / main()
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  2. NOTIONS UTILISÉES ET APPRISES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  • Génération aléatoire          → java.util.Random, nextInt()
+  • Boucle do/while               → avec double condition booléenne
+  • Compteur de tentatives        → int attempts, remaining = 10 - attempts
+  • Méthode à valeur de retour    → boolean verification()
+  • Annulation de tentative       → attempts-- dans le catch
+  • Comparaison de String         → equalsIgnoreCase() (jamais == ou !=)
+  • break                         → sortie propre de boucle
+  • continue                      → reprendre au début de la boucle
+  • Séparation des responsabilités→ une méthode = une tâche précise
+  • Conventions Java              → camelCase pour méthodes (playGame)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  3. MINI-DOCUMENTATION PÉDAGOGIQUE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 1 — java.util.Random                                        │
+└─────────────────────────────────────────────────────────────────────┘
+RÔLE :
+  Générer des nombres pseudo-aléatoires en Java.
+
+SYNTAXE :
+  Random random = new Random();
+  int n = random.nextInt(100);     // génère entre 0 et 99 inclus
+  int n = random.nextInt(100) + 1; // génère entre 1 et 100 inclus
+
+FORMULE GÉNÉRALE :
+  random.nextInt(max - min + 1) + min
+  Exemple : entre 5 et 15 → random.nextInt(11) + 5
+
+ALTERNATIVE — Math.random() :
+  int n = (int)(Math.random() * 100) + 1;
+  // Math.random() → double entre 0.0 (inclus) et 1.0 (exclus)
+  // (int) cast → tronque les décimales
+  // Moins lisible que Random → préférer Random en pratique
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 2 — Boucle do/while avec double condition                   │
+└─────────────────────────────────────────────────────────────────────┘
+RÔLE :
+  Contrôler une boucle avec plusieurs critères simultanés.
+
+SYNTAXE :
+  do {
+      // code
+  } while (condition1 && condition2);
+
+DANS CE PROJET :
+  do {
+      // jeu
+  } while (attempts < 10 && verificationResult);
+  //        ↑ pas épuisé    ↑ pas encore trouvé
+
+LOGIQUE :
+  La boucle continue TANT QUE :
+  → le joueur n'a pas épuisé ses 10 tentatives
+  → ET le nombre n'a pas été trouvé (verificationResult = true)
+
+  Elle s'arrête dès que l'une des deux conditions devient fausse.
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 3 — Méthode booléenne (retourne true/false)                 │
+└─────────────────────────────────────────────────────────────────────┘
+RÔLE :
+  Une méthode peut retourner un boolean pour signaler un état.
+  C'est un pattern très utilisé en Java.
+
+SYNTAXE :
+  static boolean verification(int mystery, int user, int attempts) {
+      if (user > mystery) {
+          System.out.println("Too High!");
+          return true;  // pas trouvé → continuer
+      } else if (user < mystery) {
+          System.out.println("Too Low!");
+          return true;  // pas trouvé → continuer
+      } else {
+          System.out.println("Congratulations!");
+          return false; // trouvé → arrêter
+      }
+  }
+
+UTILISATION :
+  verificationResult = verification(mysteryNumber, userNumber, attempts);
+  // verificationResult = true  → pas trouvé, boucle continue
+  // verificationResult = false → trouvé, boucle s'arrête
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 4 — attempts-- pour annuler une tentative invalide          │
+└─────────────────────────────────────────────────────────────────────┘
+RÔLE :
+  En UX (expérience utilisateur), une erreur de frappe ne doit pas
+  pénaliser le joueur. Il faut annuler l'incrément du compteur.
+
+PATTERN :
+  do {
+      attempts++;        // incrémenter au début du tour
+
+      try {
+          // saisie utilisateur
+      } catch (Exception e) {
+          attempts--;    // annuler l'incrément → tentative non comptée
+          continue;      // reprendre la boucle
+      }
+  } while (...);
+
+POURQUOI IMPORTANT :
+  Sans attempts--, taper "abc" au lieu d'un nombre consomme une
+  tentative → frustrant et illogique pour l'utilisateur.
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 5 — break et continue                                       │
+└─────────────────────────────────────────────────────────────────────┘
+  break    → sort immédiatement de la boucle (fin forcée)
+  continue → saute le reste du tour et reprend au début de la boucle
+
+  BREAK — utilisé pour :
+    if (attempts >= 10 && verificationResult) {
+        System.out.println("Game Over!");
+        break; // → sort du do/while proprement
+    }
+
+  CONTINUE — utilisé pour :
+    } catch (...) {
+        attempts--;
+        continue; // → reprend au début du do/while sans exécuter la suite
+    }
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 6 — Comparaison de String : règle d'or                      │
+└─────────────────────────────────────────────────────────────────────┘
+  En Java, les String sont des objets. == et != comparent les
+  RÉFÉRENCES MÉMOIRE, pas le CONTENU.
+
+  ❌ JAMAIS :
+     if (userChoice == "y")   // compare adresses mémoire → bug !
+     if (userChoice != "n")   // idem
+
+  ✅ TOUJOURS :
+     if (userChoice.equals("y"))              // contenu exact
+     if (userChoice.equalsIgnoreCase("y"))    // contenu, ignore casse
+     if ("y".equals(userChoice))             // sécurisé si userChoice null
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  4. ERREURS COMMISES ET LEÇONS RETENUES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ❌ V1 → imports inutiles (Printable, JavaBean)    ✅ Supprimés en V2
+  ❌ V1 → condition do/while inversée               ✅ Corrigée en V2
+  ❌ V1 → résultats boolean inversés                ✅ Corrigés en V2
+  ❌ V1 → String comparée avec != au lieu de equals ✅ Corrigé en V2
+  ❌ V1 → main(null) → récursion infinie            ✅ Remplacé par break
+  ❌ V1 → double au lieu de int pour entiers        ✅ Corrigé en V2
+  ❌ V2 → %n dans println → s'affiche en texte brut ✅ Corrigé en V3
+  ❌ V2 → remaining calculé mais non utilisé        ✅ Corrigé en V3
+  ❌ V2 → while("n") au lieu de while("y")          ✅ Corrigé en V3
+  ❌ V3 → Game Over même si trouvé à la 10ème       ✅ Corrigé en V4
+  ❌ V4 → formule remaining complexe (10-n+1)       ✅ Simplifiée en V5
+  ❌ V5 → attempts-- manquant dans catch            ✅ Ajouté en V6
+  ❌ V5 → espace parasite avant \n                  ✅ Supprimé en V6
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  5. CODE FINAL VALIDÉ (18/20)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+import java.util.Scanner;
+import java.util.Random;
+
+public class com.rickhast.jeux_du_nombre_mystère.JeuxDuNombreMystere {
+    static Scanner scanner = new Scanner(System.in);
+    static Random random = new Random();
+
+    static boolean verification(int mysteryNumber, int userNumber, int attempts) {
+        if (mysteryNumber < userNumber) {
+            System.out.println("Too High");
+            return true;
+        } else if (mysteryNumber > userNumber) {
+            System.out.println("Too Low");
+            return true;
+        } else {
+            System.out.println("\nCongratulations! You found it in "
+                    + attempts + " attempts\n");
+            return false;
+        }
+    }
+
+    static void playGame() {
+        System.out.println("\n===== Welcome to the Mystery Number Game =====");
+        int mysteryNumber = random.nextInt(100) + 1;
+        int userNumber;
+        int attempts = 0;
+        boolean verificationResult = true;
+        int remaining;
+
+        do {
+            attempts++;
+            remaining = 10 - attempts;
+            try {
+                System.out.printf(
+                    "Enter a number in range 1 to 100 (%d attempts remaining): ",
+                    remaining);
+                userNumber = scanner.nextInt();
+
+                if (userNumber <= 0 || userNumber > 100) {
+                    throw new java.util.InputMismatchException();
+                }
+                verificationResult = verification(mysteryNumber, userNumber, attempts);
+
+            } catch (java.util.InputMismatchException e) {
+                System.out.println("\n===== Error =====");
+                System.out.println("Invalid number: please enter a number between 1 and 100.");
+                scanner.nextLine();
+                attempts--;
+                continue;
+            }
+
+            if (attempts >= 10 && verificationResult) {
+                System.out.printf("Game Over! The number was: %d%n", mysteryNumber);
+                break;
+            }
+
+        } while (attempts < 10 && verificationResult);
+    }
+
+    public static void main(String[] args) {
+        String userChoice = "";
+
+        do {
+            try {
+                System.out.print("Play again? (y/n): ");
+                userChoice = scanner.next();
+                if (!userChoice.equalsIgnoreCase("y")
+                        && !userChoice.equalsIgnoreCase("n")) {
+                    throw new java.util.InputMismatchException();
+                }
+                if (userChoice.equalsIgnoreCase("y")) {
+                    scanner.nextLine();
+                    playGame();
+                } else {
+                    System.out.println("Goodbye and have a great day!");
+                }
+            } catch (java.util.InputMismatchException e) {
+                System.out.println("Invalid entry: please enter y or n.");
+                scanner.nextLine();
+            }
+        } while (userChoice.equalsIgnoreCase("y"));
+
+        scanner.close();
+    }
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  6. RESSOURCES UTILISÉES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  🎥 Java Random & Loops – Telusko
+     https://www.youtube.com/watch?v=TBWX97e1E9g
+
+  🎥 Java While Loop – Bro Code
+     https://www.youtube.com/watch?v=t6gmva_nnRI
+
+  📖 Java Random – docs.oracle.com
+     https://docs.oracle.com/en/java/docs/api/java.base/java/util/Random.html
+
+  📖 Generate Random Numbers – baeldung.com
+     https://www.baeldung.com/java-generating-random-numbers
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  7. PROCHAINE ÉTAPE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ➡️  P03 — Gestionnaire de Notes d'Étudiant
+  Nouvelles notions : tableaux int[], boucles for, calcul min/max/moyenne
+
+  Compétences à acquérir :
+  • Déclarer et parcourir des tableaux avec for
+  • Calculer moyenne, note min, note max
+  • Afficher une mention selon des seuils
+  • Valider chaque saisie (note entre 0 et 20)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Parcours Java 2026 | Mentor : Claude (Anthropic)
+  Prochain projet : P03 | Projets complétés : 2/100
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
