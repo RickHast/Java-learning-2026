@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="cf112705-a5e3-4550-81d5-a65ea98f1b52" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Project1/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project1/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project1/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project1/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project1/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project1/Projet1_Basic console calsulator.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project1/src/com/rickhast/calculator/BasicCalculator.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="ROOT_SYNC" value="SYNC" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="3CZF4jyYcv6zkFeDRBTTmyTjzbp" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "R:/Programmation Projects/Java Projetcs/Project1_Basic console calculator"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cf112705-a5e3-4550-81d5-a65ea98f1b52" name="Changes" comment="" />
+      <created>1776584995385</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1776584995385</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,325 @@
+
+╔══════════════════════════════════════════════════════════════════════╗
+║           RÉCAPITULATIF PÉDAGOGIQUE — P01                           ║
+║           Calculatrice Console — Java Pur                           ║
+║           Niveau : Débutant | Note finale : 18/20                   ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+Date de complétion : 2026
+Parcours          : Débutant → Senior Java (2026)
+Package           : com.rickhast.calculator
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. RÉSUMÉ DU PROJET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OBJECTIF DU PROJET
+──────────────────
+Créer une calculatrice en ligne de commande (console) capable d'effectuer
+les 4 opérations arithmétiques de base (+, -, *, /) avec gestion complète
+des erreurs de saisie et boucle de relance.
+
+FONCTIONNALITÉS DÉVELOPPÉES
+────────────────────────────
+  ✅ Saisie de deux nombres réels (type double)
+  ✅ Saisie et validation de l'opérateur (+, -, *, /)
+  ✅ Calcul et affichage du résultat formaté à 2 décimales
+  ✅ Gestion de la division par zéro (message d'erreur + arrêt propre)
+  ✅ Gestion des saisies invalides (try/catch + vidage du buffer)
+  ✅ Boucle do/while : l'utilisateur peut enchaîner plusieurs calculs
+  ✅ Fermeture propre du Scanner en fin de programme
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  2. NOTIONS UTILISÉES ET APPRISES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  • Variables et types primitifs      → double, String
+  • Lecture des entrées utilisateur   → Scanner (nextDouble, next)
+  • Structure conditionnelle switch   → avec break obligatoire
+  • Boucle do/while                   → exécution garantie au moins 1 fois
+  • Gestion des exceptions            → try/catch, InputMismatchException
+  • Vidage du buffer Scanner          → scanner.nextLine()
+  • Affichage formaté                 → System.out.printf, %.2f, %n
+  • Collections immuables             → List.of(), contains()
+  • Conventions Java                  → package en minuscules, camelCase
+  • Bonnes pratiques                  → scanner.close(), e.getMessage()
+  • Nommage des méthodes              → nom = action réelle (calculate)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  3. MINI-DOCUMENTATION PÉDAGOGIQUE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 1 — Scanner (java.util.Scanner)                             │
+└─────────────────────────────────────────────────────────────────────┘
+RÔLE :
+  Permet de lire les entrées de l'utilisateur depuis la console.
+
+SYNTAXE :
+  Scanner scanner = new Scanner(System.in);
+  double  valeur   = scanner.nextDouble();   // lit un double
+  String  texte    = scanner.next();          // lit un mot
+  String  ligne    = scanner.nextLine();      // lit une ligne entière
+
+POINT CLÉ — Le buffer :
+  Quand nextDouble() échoue (saisie invalide), le token invalide reste
+  dans le buffer. Il faut appeler scanner.nextLine() pour le vider,
+  sinon la prochaine lecture relit le même token → boucle infinie.
+
+BONNE PRATIQUE :
+  Toujours appeler scanner.close() en fin de programme pour libérer
+  la ressource.
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 2 — switch / case / break                                   │
+└─────────────────────────────────────────────────────────────────────┘
+RÔLE :
+  Remplace une longue chaîne de if/else if quand on teste une variable
+  contre plusieurs valeurs fixes.
+
+SYNTAXE :
+  switch (variable) {
+      case "valeur1":
+          // code
+          break;       // ← OBLIGATOIRE pour stopper l'exécution
+      case "valeur2":
+          // code
+          break;
+      default:
+          // cas non prévu
+  }
+
+ERREUR CLASSIQUE — Fall-through :
+  Sans break, Java continue d'exécuter les case suivants même s'ils
+  ne correspondent pas. C'est le "fall-through bug".
+
+  Exemple : si case "+" n'a pas de break, Java exécute aussi
+  case "-", case "*", case "/" → résultat faux.
+
+VERSION MODERNE (Java 14+) — Switch Expression :
+  result = switch (operator) {
+      case "+" -> number1 + number2;
+      case "-" -> number1 - number2;
+      case "*" -> number1 * number2;
+      case "/" -> number1 / number2;
+      default  -> 0.0;
+  };
+  // Pas besoin de break — la flèche -> l'implique
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 3 — Boucle do/while                                         │
+└─────────────────────────────────────────────────────────────────────┘
+RÔLE :
+  Exécute un bloc de code AU MOINS UNE FOIS, puis répète tant que la
+  condition est vraie. Idéal pour les menus interactifs.
+
+SYNTAXE :
+  do {
+      // code exécuté au moins une fois
+  } while (condition);
+
+DIFFÉRENCE AVEC while :
+  while  → vérifie la condition AVANT d'entrer dans la boucle
+  do/while → vérifie la condition APRÈS la première exécution
+
+DANS CE PROJET :
+  do {
+      // calcul + saisie
+      System.out.print("New calculation? (y/n): ");
+      userChoice = scanner.next();
+  } while (userChoice.equalsIgnoreCase("y"));
+  // equalsIgnoreCase → accepte "Y" et "y"
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 4 — try/catch et gestion des exceptions                     │
+└─────────────────────────────────────────────────────────────────────┘
+RÔLE :
+  Intercepter les erreurs d'exécution (exceptions) pour éviter que
+  le programme plante.
+
+SYNTAXE :
+  try {
+      // code qui peut échouer
+      double nombre = scanner.nextDouble(); // peut lancer une exception
+  } catch (InputMismatchException e) {
+      // code exécuté si l'exception se produit
+      System.out.println("Erreur : " + e.getMessage());
+      scanner.nextLine(); // vider le buffer
+  }
+
+DIFFÉRENCE :
+  e.toString()     → affiche "java.util.InputMismatchException: message"
+  e.getMessage()   → affiche uniquement "message" (plus propre)
+
+BONNE PRATIQUE :
+  Ne jamais laisser un catch vide. Toujours afficher au minimum
+  e.getMessage() pour comprendre l'erreur.
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 5 — System.out.printf et formatage                          │
+└─────────────────────────────────────────────────────────────────────┘
+RÔLE :
+  Afficher du texte formaté avec un contrôle précis de l'apparence
+  (nombre de décimales, alignement, etc.)
+
+SYNTAXE :
+  System.out.printf("format", valeur1, valeur2, ...);
+
+SPÉCIFICATEURS UTILES :
+  %.2f  → nombre décimal avec 2 chiffres après la virgule
+  %d    → nombre entier
+  %s    → chaîne de caractères
+  %n    → saut de ligne (portable : fonctionne sur Windows, Linux, Mac)
+  \n    → saut de ligne (peut poser problème sur Windows)
+
+DIFFÉRENCE printf vs println(String.format(...)) :
+  // ❌ Double appel — inutilement verbeux
+  System.out.println(String.format("%.2f", result));
+
+  // ✅ Un seul appel — propre et direct
+  System.out.printf("%.2f%n", result);
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 6 — List.of() et contains()                                 │
+└─────────────────────────────────────────────────────────────────────┘
+RÔLE :
+  List.of() crée une liste immuable (non modifiable) de valeurs.
+  contains() vérifie si une valeur est présente dans la liste.
+
+SYNTAXE :
+  List<String> operateurs = List.of("+", "-", "*", "/");
+  boolean valide = operateurs.contains("+"); // → true
+  boolean valide = operateurs.contains("x"); // → false
+
+BONNE PRATIQUE :
+  Déclarer List.of() UNE SEULE FOIS en dehors de la boucle.
+  Si elle est dans la boucle, Java recrée un nouvel objet à chaque
+  itération → gaspillage mémoire inutile.
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 7 — Conventions Java                                        │
+└─────────────────────────────────────────────────────────────────────┘
+  Package   → toujours en minuscules    : com.rickhast.calculator
+  Classes   → PascalCase               : Main, Calculator
+  Méthodes  → camelCase                : calculate(), getUserInput()
+  Variables → camelCase                : userChoice, number1
+  Constantes→ SCREAMING_SNAKE_CASE     : MAX_ATTEMPTS, PI
+
+  ❌ À ne jamais faire :
+     package com.RickHast.Calculator;   // majuscules dans le package
+     String do_new_calcul;              // snake_case pour variable Java
+     void Addition() {}                 // nom trompeur + PascalCase
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  4. ERREURS COMMISES ET LEÇONS RETENUES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ❌ V1 → switch sans break          ✅ Corrigé en V2
+  ❌ V1 → division par zéro non stoppée ✅ Corrigé en V2
+  ❌ V1 → méthode nommée "addition"  ✅ Renommée "calculate" en V2
+  ❌ V1 → return au lieu de boucle   ✅ Remplacé par do/while en V2
+  ❌ V1 → package avec majuscules    ✅ Corrigé en V3
+  ❌ V2 → scanner.nextLine() absent  ✅ Ajouté en V3
+  ❌ V2 → Float.isNaN() inutile      ✅ Supprimé en V3
+  ❌ V2 → println(String.format())   ✅ Remplacé par printf en V4
+  ❌ V4 → mélange float/double       ✅ Uniformisé en double (V4→V7)
+  ❌ V5 → régression float           ✅ Corrigée en V6
+  ❌ V6 → 0.0f sur un double         ✅ Corrigé en V7
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  5. CODE FINAL VALIDÉ (18/20)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+package com.rickhast.calculator;
+
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+    static Scanner scanner = new Scanner(System.in);
+
+    static void calculate(String operator, double number1, double number2) {
+        double result = 0.0;
+        switch (operator) {
+            case "+": result = number1 + number2; break;
+            case "-": result = number1 - number2; break;
+            case "*": result = number1 * number2; break;
+            case "/":
+                if (number2 == 0) {
+                    System.out.println("\nDivision by 0 is impossible!!");
+                    return;
+                }
+                result = number1 / number2;
+                break;
+        }
+        System.out.printf("%nYour operation is: %.2f %s %.2f = %.2f%n",
+                number1, operator, number2, result);
+    }
+
+    public static void main(String[] args) {
+        List<String> list = List.of("+", "-", "*", "/");
+        double number1, number2;
+        String operator, userChoice;
+
+        do {
+            try {
+                System.out.print("Enter the first number: ");
+                number1 = scanner.nextDouble();
+
+                System.out.print("Enter an operator (+, -, *, /): ");
+                operator = scanner.next();
+                if (!list.contains(operator))
+                    throw new java.util.InputMismatchException(
+                        "Invalid operator. Use: +, -, *, /");
+
+                System.out.print("Enter the second number: ");
+                number2 = scanner.nextDouble();
+                calculate(operator, number1, number2);
+
+            } catch (java.util.InputMismatchException e) {
+                System.out.println("\n===== Error =====");
+                System.out.println("Error: " + e.getMessage());
+                scanner.nextLine();
+            }
+            System.out.print("\nNew calculation? (y/n): ");
+            userChoice = scanner.next();
+        } while (userChoice.equalsIgnoreCase("y"));
+
+        System.out.println("\nGoodbye!");
+        scanner.close();
+    }
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  6. RESSOURCES UTILISÉES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  🎥 Java for Beginners – Mosh Hamedani
+     https://www.youtube.com/watch?v=eIrMbAQSU34
+
+  🎥 Scanner & User Input – Bro Code
+     https://www.youtube.com/watch?v=wAEPokhj5Q8
+
+  📖 Java Scanner – docs.oracle.com
+     https://docs.oracle.com/en/java/docs/api/java.base/java/util/Scanner.html
+
+  📖 Java Scanner – baeldung.com
+     https://www.baeldung.com/java-scanner
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  7. PROCHAINE ÉTAPE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ➡️  P02 — Jeu du Nombre Mystère
+  Nouvelles notions : Random, Math.random(), while, compteur
+
+  Compétences à acquérir :
+  • Générer un nombre aléatoire avec java.util.Random
+  • Contrôler une boucle avec un compteur de tentatives
+  • Imbriquer des conditions (trop grand / trop petit / trouvé)
+  • Proposer une option "rejouer"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Parcours Java 2026 | Mentor : Claude (Anthropic)
+  Prochain projet : P02 | Projets complétés : 1/100
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
