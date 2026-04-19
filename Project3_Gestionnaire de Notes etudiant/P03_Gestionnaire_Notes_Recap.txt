@@ -1,0 +1,266 @@
+
+╔══════════════════════════════════════════════════════════════════════╗
+║           RÉCAPITULATIF PÉDAGOGIQUE — P03                           ║
+║           Gestionnaire de Notes Étudiant — Java Pur                 ║
+║           Niveau : Débutant+ | Note finale : 18/20                  ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+Date de complétion : 2026
+Parcours          : Débutant → Senior Java (2026)
+Package           : com.rickhast.gestionnaire_de_note_etudiant
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. RÉSUMÉ DU PROJET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OBJECTIF DU PROJET
+──────────────────
+Créer un programme console qui saisit les notes d'un étudiant,
+calcule sa moyenne, affiche sa note min/max, et délivre une mention.
+
+FONCTIONNALITÉS DÉVELOPPÉES
+────────────────────────────
+  ✅ Saisie du nom et prénom de l'étudiant
+  ✅ Saisie du nombre de matières (> 0, validé)
+  ✅ Saisie de chaque note (0.0 à 20.0, validée)
+  ✅ Calcul de la moyenne (calculateAverage)
+  ✅ Recherche du min et max (findMinNote / findMaxNote)
+  ✅ Attribution d'une mention selon des seuils (getMention)
+  ✅ Affichage d'un bulletin formaté (%.2f)
+  ✅ Option "nouvel étudiant" avec boucle do/while
+  ✅ Architecture propre : une méthode = une responsabilité
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  2. NOTIONS UTILISÉES ET APPRISES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  • Tableaux primitifs         → double[] notes = new double[subjects]
+  • Boucle for classique       → for (int i = 0; i < n; i++)
+  • Boucle for-each            → for (double note : notes)
+  • Méthodes avec retour       → double, String, double[], int
+  • Passage de tableau         → par référence (contrairement aux primitifs)
+  • Recherche min/max          → algorithme de parcours de tableau
+  • Calcul de moyenne          → somme / length
+  • return direct              → getMention() sans variable intermédiaire
+  • scanner.nextLine()         → vider le buffer après nextInt/nextDouble
+  • IllegalArgumentException   → exception métier propre
+  • Architecture SRP           → Single Responsibility Principle
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  3. MINI-DOCUMENTATION PÉDAGOGIQUE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 1 — Tableaux primitifs (double[])                           │
+└─────────────────────────────────────────────────────────────────────┘
+RÔLE :
+  Stocker une collection de valeurs du même type, à taille fixe.
+
+SYNTAXE :
+  double[] notes = new double[5];  // tableau de 5 doubles (0.0 par défaut)
+  notes[0] = 13.5;                 // accès par index (commence à 0)
+  notes[4] = 18.0;                 // dernier élément (index = length - 1)
+  int taille = notes.length;       // nombre d'éléments
+
+RÈGLE FONDAMENTALE :
+  Créer le tableau APRÈS avoir connu sa taille :
+  ✅ int n = scanner.nextInt();
+     double[] notes = new double[n]; // n est connu
+
+  ❌ double[] notes = new double[n]; // n = 0 → tableau vide !
+     n = scanner.nextInt();
+
+DIFFÉRENCE double[] vs ArrayList<Double> :
+  double[]         → taille fixe, connue à l'avance, plus rapide
+  ArrayList<Double>→ taille dynamique, inconnue à l'avance, plus flexible
+  → Dans P03, on connaît le nombre de matières avant de créer le tableau
+    donc double[] est le bon choix.
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 2 — Boucle for classique vs for-each                        │
+└─────────────────────────────────────────────────────────────────────┘
+FOR CLASSIQUE — quand l'index est nécessaire :
+  for (int i = 0; i < notes.length; i++) {
+      notes[i] = scanner.nextDouble(); // ← on a besoin de i pour écrire
+  }
+
+FOR-EACH — quand on lit seulement :
+  double sum = 0;
+  for (double note : notes) {
+      sum += note; // ← on lit chaque valeur, pas besoin de l'index
+  }
+
+RÈGLE :
+  Écriture dans le tableau    → for classique (besoin de l'index)
+  Lecture seule du tableau    → for-each (plus lisible)
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 3 — Algorithme findMin / findMax                            │
+└─────────────────────────────────────────────────────────────────────┘
+PRINCIPE :
+  Supposer que le premier élément est le min (ou max),
+  puis parcourir le reste pour trouver un candidat plus petit (ou grand).
+
+CODE :
+  static double findMin(double[] notes) {
+      double min = notes[0];             // hypothèse initiale
+      for (int i = 1; i < notes.length; i++) { // partir de l'index 1
+          if (notes[i] < min) {
+              min = notes[i];            // nouveau minimum trouvé
+          }
+      }
+      return min;
+  }
+
+POURQUOI i = 1 et pas 0 ?
+  notes[0] est déjà la valeur de référence.
+  Commencer à 1 évite de se comparer à soi-même → optimisation.
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 4 — Méthode avec retour (return direct)                     │
+└─────────────────────────────────────────────────────────────────────┘
+VERSION AVEC VARIABLE INTERMÉDIAIRE (débutant) :
+  static String getMention(double average) {
+      String mention = "";
+      if (average >= 16) mention = "Excellent";
+      else if (average >= 14) mention = "Very Good";
+      // ...
+      return mention;
+  }
+
+VERSION AVEC RETURN DIRECT (recommandée) :
+  static String getMention(double average) {
+      if (average >= 16) return "Excellent";
+      if (average >= 14) return "Very Good";
+      if (average >= 12) return "Good";
+      if (average >= 10) return "Fair";
+      return "Fail"; // cas par défaut
+  }
+
+AVANTAGES du return direct :
+  → Plus lisible, moins de variables inutiles
+  → Chaque condition sort immédiatement
+  → Pas besoin de else if → les return successifs suffisent
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 5 — Passage par valeur vs par référence                     │
+└─────────────────────────────────────────────────────────────────────┘
+EN JAVA :
+  Primitifs (int, double, boolean...) → passés par VALEUR (copie)
+  Tableaux et objets                  → passés par RÉFÉRENCE
+
+CONSÉQUENCE :
+  static void modifier(int n) {
+      n = 99; // modifie la COPIE locale, pas la variable originale
+  }
+  int x = 5;
+  modifier(x);
+  System.out.println(x); // → 5 (inchangé)
+
+  static void remplir(double[] notes) {
+      notes[0] = 18.0; // modifie le VRAI tableau (référence partagée)
+  }
+  double[] tab = new double[3];
+  remplir(tab);
+  System.out.println(tab[0]); // → 18.0 (modifié !)
+
+RÈGLE :
+  Si tu veux modifier un int/String dans une méthode → retourne-le
+  Si tu veux modifier un tableau → passe-le en paramètre
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 6 — scanner.nextLine() après nextInt() / nextDouble()       │
+└─────────────────────────────────────────────────────────────────────┘
+PROBLÈME :
+  nextInt() et nextDouble() lisent la valeur mais laissent le \n
+  (touche Entrée) dans le buffer. La prochaine lecture de texte
+  récupère ce \n au lieu d'attendre la saisie de l'utilisateur.
+
+SOLUTION :
+  subjects = scanner.nextInt();
+  scanner.nextLine(); // ← vider le \n résiduel (toujours après nextInt)
+
+QUAND L'APPLIQUER :
+  ✅ Après nextInt()   suivi d'une saisie texte
+  ✅ Après nextDouble() suivi d'une saisie texte
+  ✅ Dans le catch après une saisie invalide
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NOTION 7 — IllegalArgumentException vs InputMismatchException      │
+└─────────────────────────────────────────────────────────────────────┘
+  InputMismatchException → mauvais TYPE de saisie (texte au lieu de nombre)
+  IllegalArgumentException → bon type mais valeur INVALIDE (note = -5)
+
+  Exemple :
+  scanner.nextDouble() → lève InputMismatchException si l'user tape "abc"
+  if (note < 0) throw new IllegalArgumentException(...) → valeur hors range
+
+  ❌ Ne jamais utiliser throw new Error() → réservé aux erreurs JVM graves
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  4. ERREURS COMMISES ET LEÇONS RETENUES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ❌ V1 → Variables globales (notes, matters, name)   ✅ Localisées en V3
+  ❌ V1 → ArrayList au lieu de double[]               ✅ Corrigé en V3
+  ❌ V1 → Condition do/while inversée                 ✅ Corrigée en V3
+  ❌ V1 → %f sans .2 → trop de décimales             ✅ Corrigé en V4
+  ❌ V2 → double[] notes = new double[0] (tableau vide) ✅ Corrigé en V3
+  ❌ V2 → Paramètres modifiés dans méthode (by value) ✅ Corrigé en V3
+  ❌ V3 → suffixe "Function" dans noms de méthodes   ✅ Supprimé en V4
+  ❌ V3 → note_count inutile (doublon de i+1)         ✅ Supprimé en V4
+  ❌ V3 → start() non appelé au démarrage            ✅ Corrigé en V4
+  ❌ V4 → "y" traité comme erreur dans main          ✅ Corrigé en V5
+  ❌ V4 → scanner.nextLine() manquant après nextInt() ✅ Ajouté en V5
+  ⚠️  V5 → throw new Error() au lieu d'IllegalArgumentException (mineur)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  5. CODE FINAL VALIDÉ (18/20)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Voir fichier source : GestionaireDeNotesEtudiant.java — V5 finale]
+
+Points clés de l'architecture finale :
+  → studentNames()   : saisie et retour du nom complet
+  → getSubjects()    : saisie et retour du nombre de matières
+  → getNotes()       : saisie et retour du tableau de notes
+  → getAverage()     : calcul de la moyenne
+  → findMinNote()    : recherche du minimum
+  → findMaxNote()    : recherche du maximum
+  → getMention()     : attribution de la mention
+  → start()          : orchestration + affichage du bulletin
+  → main()           : boucle "nouvel étudiant"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  6. RESSOURCES UTILISÉES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  🎥 Java Arrays – freeCodeCamp
+     https://www.youtube.com/watch?v=GdzRzWymT4c
+
+  🎥 Java Methods – Telusko
+     https://www.youtube.com/watch?v=vvanI8NsuiA
+
+  📖 Java Arrays – docs.oracle.com
+     https://docs.oracle.com/en/java/docs/api/java.base/java/util/Arrays.html
+
+  📖 Java Arrays Guide – baeldung.com
+     https://www.baeldung.com/java-arrays-guide
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  7. PROCHAINE ÉTAPE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ➡️  P04 — Convertisseur Universel
+  Nouvelles notions : menus hiérarchiques, switch, formules de conversion
+
+  Compétences à acquérir :
+  • Structurer un menu principal avec sous-menus (switch imbriqués)
+  • Appliquer des formules mathématiques (°C/°F/K, km/miles, kg/lbs)
+  • Organiser plusieurs catégories de conversion
+  • Boucle principale multi-niveaux
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Parcours Java 2026 | Mentor : Claude (Anthropic)
+  Prochain projet : P04 | Projets complétés : 3/100
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
